@@ -1,0 +1,8 @@
+[package]
+name = "rust-tc"
+version = "0.1.0"
+authors = ["Oliver Goodman <oag@optusnet.com.au>"]
+
+[dependencies]
+libc = "0.2"
+
