@@ -1,5 +1,10 @@
+
+#![cfg_attr(feature = "nightly", feature(system_allocator))]
+
+#[cfg(system_allocator)]
 use std::alloc::System;
 
+#[cfg(system_allocator)]
 #[global_allocator]
 static GLOBAL: System = System;
 
