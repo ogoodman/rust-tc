@@ -217,6 +217,18 @@ impl BDB {
         }
     }
 
+    pub fn getr(&self, key: &[u8]) -> Result<TCVec> {
+        unsafe {
+            let mut sz: libc::c_int = 0;
+            let sp = tcbdbget(self.db, key.as_ptr(), key.len() as libc::c_int, &mut sz as *mut libc::c_int);
+            if sp.is_null() {
+                Err(BDBErr{ ecode: tcbdbecode(self.db) })
+            } else {
+                Ok(TCVec::from_raw(sp, sz))
+            }
+        }
+    }
+
     pub fn vnum(&self, key: &[u8]) -> u32 {
         unsafe {
             tcbdbvnum(self.db, key.as_ptr(), key.len() as libc::c_int) as u32
