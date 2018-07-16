@@ -53,6 +53,7 @@ extern {
     fn tcbdbputkeep(db: *mut TCBDB, kbuf: *const u8, ksiz: libc::c_int, vbuf: *const u8, vsiz: libc::c_int) -> bool;
     fn tcbdbputcat(db: *mut TCBDB, kbuf: *const u8, ksiz: libc::c_int, vbuf: *const u8, vsiz: libc::c_int) -> bool;
     fn tcbdbputdup(db: *mut TCBDB, kbuf: *const u8, ksiz: libc::c_int, vbuf: *const u8, vsiz: libc::c_int) -> bool;
+    fn tcbdbout(db: *mut TCBDB, kbuf: *const u8, ksiz: libc::c_int) -> bool;
     fn tcbdbget(db: *mut TCBDB, kbuf: *const u8, ksiz: libc::c_int, sp: *mut libc::c_int) -> *mut u8;
     fn tcbdbvnum(db: *mut TCBDB, kbuf: *const u8, ksiz: libc::c_int) -> libc::c_int;
     fn tcbdbvsiz(db: *mut TCBDB, kbuf: *const u8, ksiz: libc::c_int) -> libc::c_int;
@@ -205,6 +206,12 @@ impl BDB {
         })
     }
 
+    pub fn del(&mut self, key: &[u8]) -> bool {
+        unsafe {
+            tcbdbout(self.db, key.as_ptr(), key.len() as libc::c_int)
+        }
+    }
+
     pub fn get(&self, key: &[u8]) -> Option<TCVec> {
         unsafe {
             let mut sz: libc::c_int = 0;
@@ -332,6 +339,20 @@ impl Drop for BDB {
         }
     }
 }
+
+// Even without setting a Mutex a TCBDB instance ought to
+// be able to be used from different threads with appropriate
+// synchronization, i.e. it should be Send.
+
+unsafe impl Send for BDB {}
+
+// It probably isn't Sync: we would need to check carefully
+// for any inner mutation and make sure that all methods that
+// did any mutation whatsoever were marked &mut self.
+//
+// OTOH, we should be able to make a Sync wrapper, all of
+// whose methods are &self by setting the mutex.
+
 
 /*
 struct MyCmp {

@@ -62,6 +62,19 @@ pub fn sometest() -> Result<()> {
                 c.next();
             }
         },
+        "cnext" => {
+            if args.len() < 3 {
+                println!("not enough args");
+                return Ok(())
+            }
+            let mut c = db.cursor();
+            c.jump(args[2].as_ref());
+            if let Some(key) = c.key() {
+                if let Some(val) = c.val() {
+                    println!("{} {}", from_utf8(&key).unwrap(), from_utf8(&val).unwrap())
+                }
+            }
+        },
         "path" => {
             println!("{}", db.path().unwrap());
         },
