@@ -322,7 +322,7 @@ impl BDB {
         unsafe { tcbdbfsiz(self.db) as usize }
     }
 
-    pub fn cursor(&self) -> Cursor {
+    pub fn cursor<'a>(&'a self) -> Cursor<'a> {
         unsafe {
             Cursor::from_raw(tcbdbcurnew(self.db))
         }
