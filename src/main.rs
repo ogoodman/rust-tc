@@ -5,7 +5,7 @@ use std::str::from_utf8;
 
 use rust_tc::{BDB, BDBOWRITER, BDBOCREAT, Result};
 
-pub fn sometest() -> Result<()> {
+pub fn demo() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!("not enough args");
@@ -90,22 +90,7 @@ pub fn sometest() -> Result<()> {
 
 
 fn main() {
-    if let Err(e) = sometest() {
+    if let Err(e) = demo() {
         println!("Error: {:?}", e);
     }
-
-    //rust_tc::cmptest();
-    /*
-    let mut l = List::new();
-
-    l.push(b"tom");
-    l.push(b"dick");
-    l.push(b"harry");
-
-    println!("len(l) = {}", l.len());
-
-    for v in &l {
-        println!("{}", std::str::from_utf8(v).unwrap());
-    }
-    */
 }

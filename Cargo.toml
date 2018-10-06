@@ -6,3 +6,5 @@ authors = ["Oliver Goodman <oag@optusnet.com.au>"]
 [dependencies]
 libc = "0.2"
 
+[features]
+nightly = []

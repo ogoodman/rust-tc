@@ -1,0 +1,56 @@
+Dependencies
+------------
+
+This crate requires the 'tokyocabinet' C library.
+
+See http://fallabs.com/tokyocabinet/.
+
+On Ubuntu (trusty) this can be installed as libtokyocabinet-dev.
+
+Demo code
+---------
+
+While intended for use as a library, there is a small demo program,
+src/main.rs, which compiles to target/<debug-or-release>/rust-tc,
+which demonstrates some simple use cases.
+
+To create 'test.db' in this directory, open it, and insert the
+key-value pair (foo, bar):
+
+  ./target/debug/rust-tc put foo bar
+
+To show the contents of 'test.db':
+
+  ./target/debug/rust-tc list
+
+Other commands can be discovered by reading the (short and simple)
+contents of src/main.rs.
+
+Debugging with Valgrind (Linux)
+-------------------------------
+
+While safe Rust programs are memory-safe and will not generally leak,
+bindings to C libraries can easily fail on both counts. To detect
+such problems it is helpful to be able to use a tool such as Valgrind.
+
+At the time of writing, Valgrind on Linux cannot detect memory leaks
+unless Rust is using the 'system allocator'. This requires the nightly
+compiler and the magic code at the start of src/lib.rs. With all that
+in place you should be able to proceed as follows:
+
+If you haven't already done so:
+
+  rustup install nightly
+
+Then:
+
+  cargo +nightly build --features=nightly
+
+  valgrind --leak-check=full ./target/debug/rust-tc list
+
+or change that 'list' to anything else that rust-tc accepts.
+
+NOTE: if valgrind (and all the system allocator stuff) is working
+correctly you should at least see a nonzero number of allocs and a
+(hopefully equal) number of frees. If you do a regular stable build
+you will see 0's for everything.

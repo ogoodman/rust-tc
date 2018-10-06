@@ -1,12 +1,11 @@
+#![cfg_attr(feature = "nightly", feature(alloc_system))]
 
-#![cfg_attr(feature = "nightly", feature(system_allocator))]
+#[cfg(feature="nightly")]
+extern crate alloc_system;
 
-#[cfg(system_allocator)]
-use std::alloc::System;
-
-#[cfg(system_allocator)]
+#[cfg(feature="nightly")]
 #[global_allocator]
-static GLOBAL: System = System;
+static GLOBAL: alloc_system::System = alloc_system::System{};
 
 extern crate libc;
 
